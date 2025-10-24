@@ -1,0 +1,19 @@
+# Исключения для бэкенда
+.env
+dist/
+node_modules/
+*.log
+*.tmp
+*.pid
+*.seed
+*.tgz
+*.gz
+*.zip
+*.tar
+*.swp
+*.swo
+*.DS_Store
+.idea/
+.vscode/
+coverage/
+.nyc_output/

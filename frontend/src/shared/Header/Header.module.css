@@ -1,0 +1,25 @@
+.Header {
+    display: grid;
+    grid-template-columns: 3fr 9fr;
+    grid-gap: var(--rs-unit-x5);
+    align-items: center;
+    text-align: center;
+}
+
+.HeaderNav {
+    display: grid;
+    grid-template-columns: 2fr 2fr 2fr 2fr auto;
+    grid-gap: var(--rs-unit-x5);
+}
+
+.HeaderNav button {
+    text-align: center;
+}
+
+.HeaderLogo {
+    color: var(--rs-color-foreground-primary)
+}
+
+.Header a span {
+    text-align: center;
+}

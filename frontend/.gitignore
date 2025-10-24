@@ -1,0 +1,22 @@
+# Исключения для фронтенда
+.env
+.next/
+node_modules/
+out/
+*.log
+*.tmp
+*.pid
+*.seed
+*.tgz
+*.gz
+*.zip
+*.tar
+*.swp
+*.swo
+*.DS_Store
+.idea/
+.vscode/
+coverage/
+.nyc_output/
+.next/cache/
+.next/types/

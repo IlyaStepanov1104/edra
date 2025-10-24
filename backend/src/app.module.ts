@@ -1,0 +1,32 @@
+import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
+import { ConfigModule } from '@nestjs/config';
+import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import { AuthModule } from './auth/auth.module';
+import { ChatModule } from './chat/chat.module';
+import { StatisticsModule } from './statistics/statistics.module';
+import { MongooseModule } from '@nestjs/mongoose';
+
+@Module({
+  imports: [
+    ConfigModule.forRoot({
+      envFilePath: '../.env',
+    }),
+    MongooseModule.forRoot('mongodb://127.0.0.1:27017/edra?retryWrites=true&w=majority', {
+      connectTimeoutMS: 30000,
+      socketTimeoutMS: 30000,
+      serverSelectionTimeoutMS: 5000
+    }),
+    AuthModule,
+    ChatModule,
+    StatisticsModule,
+  ],
+  controllers: [],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+  ],
+})
+export class AppModule {}

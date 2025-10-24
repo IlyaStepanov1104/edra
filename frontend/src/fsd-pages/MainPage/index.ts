@@ -1,0 +1,1 @@
+export { MainPage } from '@/fsd-pages/MainPage/MainPage';
