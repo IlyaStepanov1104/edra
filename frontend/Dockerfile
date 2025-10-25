@@ -1,11 +1,12 @@
 FROM node:22-alpine as builder
 
 WORKDIR /usr/src/app
-COPY package.json package-lock.json ./
-RUN npm install -g next && \
-    npm install --force
+COPY package.json yarn.lock ./
+RUN corepack enable && \
+    yarn set version stable && \
+    yarn install --immutable
 COPY . .
-RUN npm run build
+RUN yarn build
 
 FROM node:22-alpine
 WORKDIR /usr/src/app
@@ -15,4 +16,4 @@ COPY --from=builder /usr/src/app/node_modules ./node_modules
 
 ENV NODE_ENV=production
 EXPOSE 3001
-CMD ["npx", "next", "start"]
+CMD ["yarn", "start"]
