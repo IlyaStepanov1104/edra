@@ -19,7 +19,7 @@ export const LoginForm: FC<LoginFormProps> = ({ onSuccess }) => {
     setError('');
 
     try {
-      const { access_token } = await login(email, password);
+      const { access_token } = await login({ email, password });
       setToken(access_token);
       onSuccess?.();
     } catch (err) {
