@@ -46,20 +46,4 @@ export const sendMessage = async (botSlug: string, message: string, token: strin
   return response.data;
 };
 
-interface StatisticsData {
-  metrics: {
-    accuracy?: number;
-    avgResponseTime?: number;
-    sessionsCount?: number;
-  };
-  updatedAt?: string;
-}
-
-export const getStatistics = async (botSlug: string, token: string): Promise<StatisticsData> => {
-  const response = await api.get(`/statistics/${botSlug}`, {
-    headers: { Authorization: `Bearer ${token}` }
-  });
-  return response.data;
-};
-
 export default api;

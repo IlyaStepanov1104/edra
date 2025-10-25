@@ -29,7 +29,7 @@ const fsdRules = {
       }
     ],
     // Разрешаем относительные импорты внутри одного слоя
-    "import/no-relative-parent-imports": "error",
+    "import/no-relative-parent-imports": "off",
     // Запрещаем циклические зависимости между слоями
     "import/no-cycle": ["error", { maxDepth: Infinity }]
   },
