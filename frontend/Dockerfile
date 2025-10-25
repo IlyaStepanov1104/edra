@@ -1,10 +1,10 @@
 FROM node:22-alpine as builder
 
 WORKDIR /usr/src/app
-COPY package*.json ./
+COPY package.json package-lock.json ./
 RUN corepack enable && \
-    npm install -g npm@latest && \
-    npm install --legacy-peer-deps --force
+    npm install -g npm@10.8.2 && \
+    npm ci --omit=dev
 COPY . .
 RUN npm run build
 
@@ -17,4 +17,4 @@ COPY --from=builder /usr/src/app/node_modules ./node_modules
 
 ENV NODE_ENV=production
 EXPOSE 3001
-CMD ["npm", "run", "start"]
+CMD ["npm", "start"]
