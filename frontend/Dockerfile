@@ -4,7 +4,7 @@ WORKDIR /usr/src/app
 COPY package.json yarn.lock ./
 RUN corepack enable && \
     yarn set version stable && \
-    yarn install --immutable
+    yarn install --immutable-cache
 COPY . .
 RUN yarn build
 
