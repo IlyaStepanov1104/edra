@@ -4010,10 +4010,10 @@ regexp.prototype.flags@^1.5.3, regexp.prototype.flags@^1.5.4:
     gopd "^1.2.0"
     set-function-name "^2.0.2"
 
-reshaped@^3.7.4:
-  version "3.8.4"
-  resolved "https://registry.yarnpkg.com/reshaped/-/reshaped-3.8.4.tgz#2b2daf9404d0a9fade763f2aa4b310d58b4c1a5f"
-  integrity sha512-moPpUOGsbwVtJKQlsavEpF9EsaD6RbL2Ej/KJuf4rL/GL3EsvOahCKS5NU9RLVh8R1iN2w1ccJg6cm5CSgyQrA==
+reshaped@^3.8.5:
+  version "3.8.5"
+  resolved "https://registry.yarnpkg.com/reshaped/-/reshaped-3.8.5.tgz#232e07b8e28da8fd9309ae3d65def312e9dc0105"
+  integrity sha512-RUeLRHdX2rkykVyeuWnZjU4CoU832/SP4d9sl2+Za03aYcr0c0IB1v8j+LQZK5bsUbngnDnuRqYN+XXLGyE1gg==
   dependencies:
     "@changesets/changelog-github" "0.5.1"
     "@csstools/postcss-global-data" "3.1.0"
