@@ -12,7 +12,7 @@ import { MongooseModule } from '@nestjs/mongoose';
     ConfigModule.forRoot({
       envFilePath: '../.env',
     }),
-    MongooseModule.forRoot(process.env.MONGODB_UR ?? 'mongodb://127.0.0.1:27017/edra?retryWrites=true&w=majority', {
+    MongooseModule.forRoot(process.env.MONGODB_URI ?? 'mongodb://127.0.0.1:27017/edra?retryWrites=true&w=majority', {
       connectTimeoutMS: 30000,
       socketTimeoutMS: 30000,
       serverSelectionTimeoutMS: 5000
