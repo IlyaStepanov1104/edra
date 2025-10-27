@@ -12,7 +12,7 @@ interface RegisterData {
 }
 
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: `${process.env.NEXT_PUBLIC_API_URL ?? ''}/api`,
   withCredentials: true
 });
 
@@ -33,7 +33,7 @@ interface ChatMessage {
 }
 
 export const getChatHistory = async (botSlug: string, token: string): Promise<ChatMessage[]> => {
-  const response = await api.get(`/api/chat/${botSlug}/history`, {
+  const response = await api.get(`/chat/${botSlug}/history`, {
     headers: { Authorization: `Bearer ${token}` }
   });
   return response.data;
