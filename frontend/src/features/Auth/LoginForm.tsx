@@ -19,7 +19,11 @@ export const LoginForm: FC<LoginFormProps> = ({ onSuccess }) => {
     setError('');
 
     try {
-      const { access_token } = await login({ email, password });
+      const { statusCode, access_token } = await login({ email, password });
+      if (!access_token && statusCode !== '200') {
+        setError('Invalid email or password');
+        return;
+      }
       setToken(access_token);
       onSuccess?.();
     } catch (err) {

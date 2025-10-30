@@ -26,8 +26,8 @@ export const Dashboard: FC = () => {
     const data = [getBotStatisticsStub(), getBotStatisticsStub({title: 'Math', percent: 13.2})];
     return (
         <div className={styles.Dashboard}>
-            {data.map((statistics) => (
-                <>
+            {data.map((statistics, key) => (
+                <div key={key}>
                     <div className={styles.DashboardItem}>
                         <Text variant='body-2' color='primary' weight='bold'
                               className={styles.DashboardItemTitle}>{statistics.title}</Text>
@@ -35,9 +35,9 @@ export const Dashboard: FC = () => {
                         <Text variant='body-1'>{statistics.percent.toFixed(1)}%</Text>
                     </div>
                     {statistics.list.map((item, index) => (
-                        <DashboardItem item={item} index={index + 1}/>
+                        <DashboardItem item={item} index={index + 1} key={index} />
                     ))}
-                </>
+                </div>
             ))}
         </div>
     )

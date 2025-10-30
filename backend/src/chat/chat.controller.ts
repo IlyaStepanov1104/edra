@@ -8,7 +8,7 @@ import { JwtPayload } from '../auth/types/jwt-payload.interface';
 export class ChatController {
   constructor(private chatService: ChatService) {}
 
-  @Post(':botId')
+  @Post(':botId/send')
   @UseGuards(JwtAuthGuard)
   async sendMessage(
     @Req() req: Request & { user: JwtPayload },
