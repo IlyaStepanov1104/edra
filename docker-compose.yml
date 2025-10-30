@@ -19,9 +19,6 @@ services:
     restart: always
     depends_on:
       - mongo
-    environment:
-      - NODE_ENV=production
-      - HOST=0.0.0.0
     volumes:
       - ./backend:/usr/src/app
       - /usr/src/app/node_modules
@@ -38,9 +35,6 @@ services:
     restart: unless-stopped
     depends_on:
       - backend
-    environment:
-      - NODE_ENV=development
-      - NEXT_PUBLIC_API_URL=http://84.201.144.120:3000
     volumes:
       - ./frontend:/usr/src/app
       - /usr/src/app/node_modules
@@ -49,17 +43,16 @@ services:
     env_file:
       - ./frontend/.env
 
-  # nginx временно отключен для dev-режима
-  # nginx:
-  #   image: nginx:alpine
-  #   container_name: edra-nginx
-  #   ports:
-  #     - "80:80"
-  #     - "443:443"
-  #   volumes:
-  #     - ./nginx.conf:/etc/nginx/nginx.conf
-  #   depends_on:
-  #     - backend
+  nginx:
+    image: nginx:alpine
+    container_name: edra-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - backend
 
 volumes:
   mongo_data:
