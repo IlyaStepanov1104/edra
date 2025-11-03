@@ -7,6 +7,7 @@ import { ChatModule } from './chat/chat.module';
 import { StatisticsModule } from './statistics/statistics.module';
 import { MongooseModule } from '@nestjs/mongoose';
 
+console.log("%c 1 --> Line: 16||app.module.ts\n process.env.MONGODB_URI: ","color:#f0f;", process.env.MONGODB_URI);
 @Module({
   imports: [
     ConfigModule.forRoot({
