@@ -7,9 +7,10 @@ export const useAuth = () => {
   };
 
   const setToken = (token: string): void => {
+    console.log("%c 4 --> Line: 10||auth.ts\n token: ","color:#f00;", token);
     if (typeof window !== 'undefined') {
       localStorage.setItem('jwtToken', token);
-      document.cookie = `jwtToken=${token}; path=/; max-age=86400; secure=${process.env.NODE_ENV === 'production'}; samesite=strict`;
+      document.cookie = `jwtToken=${token}; path=/; max-age=86400; secure=true; samesite=strict`;
     }
   };
 
