@@ -1,15 +1,14 @@
 # ---------- BUILD STAGE ----------
-FROM node:22-alpine as builder
+FROM node:22-alpine AS builder
 
 WORKDIR /usr/src/app
 
-COPY package.json yarn.lock ./
-RUN corepack enable && \
-    yarn set version stable && \
-    yarn install --frozen-lockfile --network-timeout 1000000
+COPY package*.json ./
+
+RUN npm ci --no-audit --no-fund
 
 COPY . .
-RUN yarn build
+RUN npm run build
 
 # ---------- RUNTIME STAGE ----------
 FROM node:22-alpine
@@ -25,4 +24,5 @@ COPY --from=builder /usr/src/app/package.json ./package.json
 COPY --from=builder /usr/src/app/next.config.* ./
 
 EXPOSE 3000
-CMD ["yarn", "start"]
+
+CMD ["npm", "start"]
