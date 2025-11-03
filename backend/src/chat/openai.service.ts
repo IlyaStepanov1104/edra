@@ -49,7 +49,7 @@ export class OpenaiService {
   constructor() {
     const apiKey = process.env.OPENAI_API_KEY?.trim();
     if (!apiKey || !apiKey.startsWith('sk-')) {
-      throw new Error('OpenAI API key is not configured properly. Please set OPENAI_API_KEY in your environment variables and ensure it starts with 'sk-'.');
+      throw new Error('OpenAI API key is not configured properly. Please set OPENAI_API_KEY in your environment variables and ensure it starts with sk-.');
     }
     this.openai = new OpenAI({ apiKey });
   }
