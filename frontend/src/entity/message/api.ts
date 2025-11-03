@@ -10,7 +10,7 @@ export const getBotChatHistory = async (botSlug: string | null, token: string): 
     return history.map((message, index) => ({
       id: index + 1,
       isMe: message.isFromUser,
-      text: message.content,
+      content: message.content,
       createdAt: message.createdAt
     }));
   } catch (error) {

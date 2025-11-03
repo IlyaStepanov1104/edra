@@ -1,8 +1,10 @@
 export interface IMessage {
-    id: number;
-    isMe: boolean;
-    text: string;
+    content: string;
     createdAt?: string;
+    "_id": string,
+    "userId": string,
+    "botId": string,
+    "role": "user" | 'assistant',
 }
 
 export type IChatHistory = IMessage[];

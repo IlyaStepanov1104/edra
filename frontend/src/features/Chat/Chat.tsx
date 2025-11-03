@@ -15,6 +15,26 @@ import { IconQRCode } from './Chat.assets/IconQRCode';
 import { SimpleTooltip } from "@shared/SimpleTooltip";
 import { useAuth } from "@shared/lib/auth";
 
+const informationBotHistory: IChatHistory = [
+    {
+        _id: '1',
+        content: 'Edra is not affiliated with or endorsed by the College Board. However, our curriculum is 100% aligned with the official SAT structure and content as of 2025.\n' +
+            '\n' +
+            '👉 For official SAT information, policies, and registration, please visit the College Board official website. https://satsuite.collegeboard.org/sat',
+        userId: 'default',
+        botId: 'information',
+        role: 'assistant'
+    },
+    {
+        _id: '2',
+        content: '💬 Meet Your Coach\n' +
+            'Here is your personal SAT coach bot.\n' +
+            'Ask anything, practice questions, and track your progress — all in one place.',
+        userId: 'default',
+        botId: 'information',
+        role: 'assistant'
+    },
+];
 
 const Marker: FC<{isMe: boolean}> = ({isMe}) => {
     return <Avatar
@@ -28,6 +48,7 @@ const Marker: FC<{isMe: boolean}> = ({isMe}) => {
 export const Chat: FC = ({}) => {
     const params = useUnit(PageModel.$pageParams);
     const botSlug = params?.bot ?? null;
+    const isInformationBot = botSlug === 'information';
     const page = params?.page;
     const [chatHistory, setChatHistory] = useState<IChatHistory>([]);
     const [inputValue, setInputValue] = useState('');
@@ -44,10 +65,12 @@ export const Chat: FC = ({}) => {
             return;
         }
 
+        if (isInformationBot) setChatHistory(informationBotHistory);
+
         const loadHistory = async () => {
             try {
                 const history = await getBotChatHistory(botSlug, token);
-                setChatHistory(history);
+                setChatHistory((prev) => [...prev, ...history]);
                 setError(null);
             } catch (err) {
                 setError('Failed to load chat history');
@@ -79,9 +102,11 @@ export const Chat: FC = ({}) => {
         
         try {
             setChatHistory((prev) => [...prev, {
-                id: prev.length + 1,
-                text: inputValue,
-                isMe: true,
+                _id: '',
+                role: 'user',
+                content: inputValue,
+                "userId": '',
+                "botId": '',
             }]);
             setInputValue('');
             setIsMessageLoading(true);
@@ -89,9 +114,11 @@ export const Chat: FC = ({}) => {
             const response = await sendBotMessage(botSlug, inputValue, token);
             
             setChatHistory((prev) => [...prev, {
-                id: prev.length + 1,
-                text: response,
-                isMe: false,
+                _id: '',
+                role: 'assistant',
+                content: response,
+                "userId": '',
+                "botId": '',
             }]);
         } catch (error) {
             setError('Failed to send message');
@@ -113,15 +140,18 @@ export const Chat: FC = ({}) => {
 
     return botSlug ? (
             <div className={styles.ChatWrapper}>
+                {isInformationBot && <div className={styles.InformationMessage}>
+                    At Edra, our team of cognitive scientists and AI experts has built an innovative system that combines smart learning science with advanced AI. Each topic is practiced separately, so you master every type of question in both Reading & Writing and Math. If you commit to the program and put in the hours, we guarantee you’ll strengthen your skills and achieve your absolute best on the SAT.
+                </div>}
                 <div className={cn(styles.Chat, styles.Card)} ref={chatContainerRef}>
                     <Timeline>
-                        {chatHistory.map((message) => {
+                        {chatHistory.map((message, index) => {
                             return (
                                 <Timeline.Item
-                                    markerSlot={<Marker isMe={message.isMe}/>}
-                                    key={message.id}
+                                    markerSlot={<Marker isMe={message.role === 'user'}/>}
+                                    key={index}
                                 >
-                                    <Text variant="body-1" className={styles.Text}>{message.text}</Text>
+                                    <Text variant="body-1" className={styles.Text}>{message.content}</Text>
                                 </Timeline.Item>
                             );
                         })}
@@ -145,7 +175,7 @@ export const Chat: FC = ({}) => {
                         >
                         </TextArea>
                         <View justify="space-between" direction="row">
-                            <SimpleTooltip content="This button not workin without backend!">
+                            <SimpleTooltip content="Извините, произошла ошибка. Пожалуйста, попробуйте позже.">
                                 <Button
                                     icon={IconMic}
                                     color='primary'
