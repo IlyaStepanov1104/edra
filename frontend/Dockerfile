@@ -3,26 +3,17 @@ FROM node:22-alpine AS builder
 
 WORKDIR /usr/src/app
 
+# Копируем package.json и lock-файл
 COPY package*.json ./
 
-RUN npm ci --no-audit --no-fund
+# Устанавливаем зависимости Node
+RUN npm install
 
+# Копируем проект
 COPY . .
-RUN npm run build
 
-# ---------- RUNTIME STAGE ----------
-FROM node:22-alpine
-
-WORKDIR /usr/src/app
-
-ENV NODE_ENV=production
-
-COPY --from=builder /usr/src/app/.next ./.next
-COPY --from=builder /usr/src/app/node_modules ./node_modules
-COPY --from=builder /usr/src/app/public ./public
-COPY --from=builder /usr/src/app/package.json ./package.json
-COPY --from=builder /usr/src/app/next.config.* ./
-
+# Открываем порт
 EXPOSE 3000
 
-CMD ["npm", "start"]
+# Запуск Next.js
+CMD ["npm", "run", "dev"]
