@@ -5,7 +5,12 @@ const nextConfig: NextConfig = {
     experimental: {
         optimizePackageImports: ["reshaped"],
     },
-    allowedDevOrigins: ["*"],
+    allowedDevOrigins: [
+        "http://localhost:3000",
+        "http://158.160.198.102:3000",
+        "http://localhost:3001",
+        "http://158.160.198.102:3001"
+    ],
     async redirects() {
         return [
             {

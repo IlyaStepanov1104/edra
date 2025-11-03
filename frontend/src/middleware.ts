@@ -6,8 +6,6 @@ const publicRoutes = ["/login", "/register"]
 export function middleware(request: NextRequest) {
   const token = request.cookies.get("jwtToken")?.value;
   const { pathname } = request.nextUrl
-  console.log("%c 1 --> Line: 8||middleware.ts\n token: ","color:#f0f;", token);
-  console.log("%c 2 --> Line: 10||middleware.ts\n pathname: ","color:#0f0;", pathname);
 
   // Разрешаем публичные страницы
   if (

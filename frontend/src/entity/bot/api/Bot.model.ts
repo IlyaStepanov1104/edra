@@ -1,21 +1,23 @@
-import { atom } from "@shared/lib";
-import { createEffect, createStore, sample } from "effector";
-import { IBot } from "@/entity/bot";
-import { getBotListStub } from "@/mocks/botListMock";
-import { PageModel, PagesType } from "@shared/lib/pages";
+import {atom} from "@shared/lib";
+import {createEffect, createStore, sample} from "effector";
+import {IBot} from "../types";
+import {PageModel, PagesType} from "@shared/lib/pages";
+import {BackendBot, getBotList} from "@shared/lib/api";
 
-const informationPageBotList: IBot[] = [
+const informationPageBotList: BackendBot[] = [
     {
-        id: 1,
-        order: 1,
-        slug: 'information',
-        title: 'Information',
+        _id: "information",
+        name: "information",
+        description: "",
+        prompt: "",
+        module: "information",
     },
     {
-        id: 2,
-        order: 2,
-        slug: 'dashboard',
-        title: 'Dashboard',
+        _id: "dashboard",
+        name: "Dashboard",
+        description: "",
+        prompt: "",
+        module: "information",
     },
 ];
 
@@ -23,19 +25,15 @@ export const BotModel = atom(() => {
     const $botList = createStore<IBot[]>([]);
     const $currentBot = createStore<IBot | null>(null);
 
-    const loadBotListFx = createEffect((page: PagesType | null) => {
-        switch (page) {
-            case 'information':
-                return informationPageBotList;
-            case 'math':
-                return getBotListStub(17);
-            case 'reading-and-writing':
-                return getBotListStub(7);
-            case 'practice-exam':
-                return [...getBotListStub(4), ...getBotListStub(4, 4, {disabled: true})];
-            default:
-                return [];
+    const loadBotListFx = createEffect(async (page: PagesType | null) => {
+        if (!page) return;
+
+        if (page === 'information') {
+            return informationPageBotList;
         }
+
+        const token = localStorage.getItem('jwtToken') ?? '';
+        return await getBotList(page, token);
     });
 
     sample({
@@ -53,6 +51,13 @@ export const BotModel = atom(() => {
 
     sample({
         clock: loadBotListFx.doneData,
+        fn: (bot) => bot ? bot.map((item, index) => ({
+            id: index,
+            order: index,
+            slug: item._id,
+            title: item.name,
+            disabled: item.createdAt && +item.createdAt > Date.now()
+        })) : [],
         target: $botList
     });
 

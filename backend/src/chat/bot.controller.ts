@@ -1,6 +1,6 @@
-import { Controller, Get, Post, Body, Param, Put } from '@nestjs/common';
+import {Controller, Get, Post, Body, Param, Put, Query} from '@nestjs/common';
 import { Bot } from './bot.entity';
-import { Model } from 'mongoose';
+import {Model} from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 
 @Controller('bots')
@@ -16,8 +16,9 @@ export class BotController {
   }
 
   @Get()
-  async findAll() {
-    return this.botModel.find().exec();
+  async findAll(@Query('module') module?: string) {
+    const filter = module ? { module } : {};
+    return this.botModel.find(filter).exec();
   }
 
   @Get(':id')

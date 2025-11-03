@@ -39,6 +39,23 @@ export const getChatHistory = async (botSlug: string, token: string): Promise<Ch
   return response.data;
 };
 
+export interface BackendBot {
+  _id: string;
+  name: string;
+  description: string;
+  prompt: string;
+  module: string;
+  createdAt?: Date;
+}
+
+export const getBotList = async (module: string, token: string): Promise<BackendBot[]> => {
+  const response = await api.get(`/bots`, {
+    headers: { Authorization: `Bearer ${token}` },
+    params: { module }
+  });
+  return response.data;
+};
+
 export const sendMessage = async (botSlug: string, message: string, token: string): Promise<string> => {
   const response = await api.post(`/chat/${botSlug}/send`, { message }, {
     headers: { Authorization: `Bearer ${token}` }

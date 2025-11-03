@@ -15,6 +15,9 @@ export class Bot extends Document {
   @Prop({ required: true })
   prompt: string;
 
+  @Prop({ required: true })
+  module: string;
+
   @Prop({ default: Date.now })
   createdAt: Date;
 }
