@@ -2,13 +2,6 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
     transpilePackages: ["reshaped"],
-    webpack(config) {
-        config.module.rules.push({
-            test: /\.css$/i,
-            use: ["style-loader", "css-loader"],
-        });
-        return config;
-    },
     experimental: {
         optimizePackageImports: ["reshaped"],
     },
