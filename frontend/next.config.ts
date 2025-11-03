@@ -2,9 +2,17 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
     transpilePackages: ["reshaped"],
+    webpack(config) {
+        config.module.rules.push({
+            test: /\.css$/,
+            use: ["style-loader", "css-loader", "postcss-loader"],
+        });
+        return config;
+    },
     experimental: {
         optimizePackageImports: ["reshaped"],
     },
+    allowedDevOrigins: ["http://158.160.198.102"],
     async redirects() {
         return [
             {

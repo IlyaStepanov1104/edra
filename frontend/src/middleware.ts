@@ -24,7 +24,9 @@ export function middleware(request: NextRequest) {
   return NextResponse.next()
 }
 
-// ✅ Рабочий matcher без capturing groups
+// src/middleware.ts
 export const config = {
   matcher: ["/((?!api|_next/|favicon.ico).*)"],
-}
+  runtime: "nodejs", // 👈 добавь это
+};
+
