@@ -1,35 +1,30 @@
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
+import { NextResponse } from "next/server"
+import type { NextRequest } from "next/server"
 
-const publicRoutes = ['/login', '/register', '/_next', '/favicon.ico']
+const publicRoutes = ["/login", "/register"]
 
 export function middleware(request: NextRequest) {
-  const currentUser = request.cookies.get('jwtToken')?.value
+  const token = request.cookies.get("jwtToken")?.value
   const { pathname } = request.nextUrl
 
+  // Разрешаем публичные страницы
   if (
-      publicRoutes.some(route =>
-          pathname.startsWith(route) ||
-          pathname.startsWith('/_next/') ||
-          pathname.endsWith('.ico') ||
-          pathname.endsWith('.png') ||
-          pathname.endsWith('.jpg') ||
-          pathname.endsWith('.svg')
-      )
+      publicRoutes.some(route => pathname.startsWith(route)) ||
+      pathname.startsWith("/_next/") ||
+      pathname.match(/\.(png|jpg|jpeg|svg|ico)$/)
   ) {
     return NextResponse.next()
   }
 
-  if (!currentUser) {
-    return NextResponse.redirect(new URL('/login', request.url))
+  // Редирект неавторизованных пользователей
+  if (!token) {
+    return NextResponse.redirect(new URL("/login", request.url))
   }
 
   return NextResponse.next()
 }
 
+// ✅ Рабочий matcher без capturing groups
 export const config = {
-  matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico|.*\\.(png|jpg|svg|ico)).*)"
-  ],
-  runtime: "nodejs",
+  matcher: ["/((?!api|_next/|favicon.ico).*)"],
 }
