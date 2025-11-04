@@ -9,9 +9,9 @@ async function bootstrap() {
   
   // Enable CORS
   app.enableCors({
-    origin: true, // разрешить любые домены
+    origin: 'https://edra-test.duckdns.org', // фронтенд
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    allowedHeaders: '*',
+    allowedHeaders: 'Content-Type,Authorization', // обязательно добавить Content-Type
     credentials: true,
   });
   await app.listen(3000);
