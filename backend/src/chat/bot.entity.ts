@@ -4,7 +4,7 @@ import { Document } from 'mongoose';
 @Schema()
 export class Bot extends Document {
   @Prop({ type: String, required: true, _id: true })
-  _id: string;
+  declare _id: string;
 
   @Prop({ required: true })
   name: string;
