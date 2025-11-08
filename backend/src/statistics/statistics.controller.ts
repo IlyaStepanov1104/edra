@@ -4,7 +4,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { JwtPayload } from '../auth/types/jwt-payload.interface';
 import { Request } from 'express';
 
-@Controller('statistics')
+@Controller('api/statistics')
 export class StatisticsController {
   constructor(private statsService: StatisticsService) {}
 

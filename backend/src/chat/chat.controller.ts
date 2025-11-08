@@ -4,7 +4,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Request } from 'express';
 import { JwtPayload } from '../auth/types/jwt-payload.interface';
 
-@Controller('chat')
+@Controller('api/chat')
 export class ChatController {
   constructor(private chatService: ChatService) {}
 

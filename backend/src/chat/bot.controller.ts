@@ -3,7 +3,7 @@ import { Bot } from './bot.entity';
 import {Model} from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 
-@Controller('bots')
+@Controller('api/bots')
 export class BotController {
   constructor(
     @InjectModel(Bot.name) private botModel: Model<Bot>,
