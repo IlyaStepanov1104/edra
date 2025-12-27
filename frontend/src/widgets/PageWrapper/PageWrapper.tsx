@@ -1,4 +1,3 @@
-// src/widgets/PageWrapper/PageWrapper.tsx
 'use client';
 
 import { FC, PropsWithChildren, useEffect } from 'react';
@@ -11,16 +10,16 @@ import { useUnit } from "effector-react";
 
 export const PageWrapper: FC<PropsWithChildren> = ({children}) => {
     const params = useParams();
-    const pageParamsReceived = useUnit(PageModel.pageParamsReceived);
+    const {pageParamsReceived, $pageParams} = useUnit(PageModel);
 
     useEffect(() => {
-        if (params?.page || params?.bot) {
+        if (params?.page !== $pageParams?.page || params?.bot !== $pageParams?.bot) {
             pageParamsReceived({
                 page: params.page as string,
                 bot: params.bot as string
             });
         }
-    }, [params]);
+    }, [$pageParams, pageParamsReceived, params]);
 
     return (
         <div className={styles.wrapper}>

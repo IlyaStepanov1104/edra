@@ -1,4 +1,4 @@
-import { atom } from "@shared/lib";
+import { atom } from "@shared/lib/atom";
 import { createEvent, createStore, sample } from "effector";
 import { PagesType } from "./types";
 
@@ -10,10 +10,12 @@ interface PageParams {
 export const PageModel = atom(() => {
     const pageParamsReceived = createEvent<PageParams>();
 
-    const $pageParams = createStore<PageParams | null>(null).on(
-        pageParamsReceived,
-        (_, params) => params
-    );
+    const $pageParams = createStore<PageParams | null>(null);
+
+    sample({
+        source: pageParamsReceived,
+        target: $pageParams
+    })
 
     return {pageParamsReceived, $pageParams};
 });

@@ -26,7 +26,7 @@ export const RegisterForm: FC<RegisterFormProps> = ({ onSuccess }) => {
       setToken(access_token);
       onSuccess?.();
     } catch (err) {
-      setError('Ошибка регистрации');
+      setError('Register error');
     } finally {
       setIsLoading(false);
     }
@@ -38,7 +38,7 @@ export const RegisterForm: FC<RegisterFormProps> = ({ onSuccess }) => {
         name="name"
         value={name}
         onChange={({ value }) => setName(value)}
-        placeholder="Имя"
+        placeholder="Name"
         inputAttributes={{ required: true }}
       />
       <TextField
@@ -52,7 +52,7 @@ export const RegisterForm: FC<RegisterFormProps> = ({ onSuccess }) => {
         name="password"
         value={password}
         onChange={({ value }) => setPassword(value)}
-        placeholder="Пароль"
+        placeholder="Password"
         inputAttributes={{ 
           required: true,
           type: 'password'
@@ -60,7 +60,7 @@ export const RegisterForm: FC<RegisterFormProps> = ({ onSuccess }) => {
       />
       {error && <Text color="critical">{error}</Text>}
       <Button onClick={handleSubmit} disabled={isLoading} fullWidth>
-        {isLoading ? 'Регистрация...' : 'Зарегистрироваться'}
+        {isLoading ? 'Loading...' : 'Register'}
       </Button>
     </View>
   );

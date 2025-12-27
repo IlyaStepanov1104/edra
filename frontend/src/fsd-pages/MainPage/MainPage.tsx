@@ -1,5 +1,5 @@
 'use client';
-import { FC } from 'react'
+import {FC, useEffect} from 'react'
 import { Chat } from "@features/Chat";
 import { BotModel } from "@/entity/bot";
 import { useUnit } from "effector-react";

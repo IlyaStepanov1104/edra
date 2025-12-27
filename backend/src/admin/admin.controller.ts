@@ -12,10 +12,21 @@ import {Request, Response} from 'express';
 import {AdminService} from './admin.service';
 import {Public} from "@/auth/public.decorator";
 
+function parseCookies(cookieHeader?: string): Record<string, string> {
+    if (!cookieHeader) return {};
+
+    return Object.fromEntries(
+        cookieHeader.split(';').map(cookie => {
+            const [key, ...rest] = cookie.trim().split('=');
+            return [key, decodeURIComponent(rest.join('='))];
+        })
+    );
+}
+
 // ====== Проверка сессии ======
-function checkSession(req: Request) {
-    return true;
-    return req.cookies && req.cookies.admin_session === '1';
+function checkSession(req: Request): boolean {
+    const cookies = parseCookies(req.headers.cookie);
+    return cookies.admin_session === '1';
 }
 
 const head = (title: string) => `<head>
@@ -26,9 +37,10 @@ const head = (title: string) => `<head>
 function menu() {
     return `
     <nav class="mb-4">
-      <a href="/admin" class="btn btn-outline-primary btn-sm">Боты</a>
-      <a href="/admin/messages" class="btn btn-outline-primary btn-sm">Сообщения</a>
-      <a href="/admin/logout" class="btn btn-outline-danger btn-sm">Выйти</a>
+      <a href="/admin" class="btn btn-outline-primary btn-sm">Bots</a>
+      <a href="/admin/messages" class="btn btn-outline-primary btn-sm">Messages</a>
+      <a href="/admin/users" class="btn btn-outline-primary btn-sm">Users</a>
+      <a href="/admin/logout" class="btn btn-outline-danger btn-sm">Logout</a>
     </nav>
   `;
 }
@@ -41,16 +53,17 @@ export class AdminController {
     // ====== Страница логина ======
     @Public()
     @Get('login')
-    loginPage(@Res() res: Response) {
+    loginPage(@Req() req: Request, @Res() res: Response) {
+        if (checkSession(req)) return res.redirect('/admin');
         return res.send(`
       <html>
       ${head('Login')}
       <body class="p-4">
-        <h3>Админ-панель</h3>
+        <h3>Admin panel</h3>
         <form method="post" action="/admin/login" class="mt-3" style="max-width:300px;">
-          <input name="user" class="form-control mb-2" placeholder="Логин" />
-          <input type="password" name="pass" class="form-control mb-2" placeholder="Пароль" />
-          <button class="btn btn-primary w-100">Войти</button>
+          <input name="user" class="form-control mb-2" placeholder="Login" />
+          <input type="password" name="pass" class="form-control mb-2" placeholder="Password" />
+          <button class="btn btn-primary w-100">Log In</button>
         </form>
       </body>
       </html>
@@ -72,14 +85,14 @@ export class AdminController {
       <html>
       ${head('Login')}
       <body class="p-4">
-        <h3>Админ-панель</h3>
+        <h3>Admin Panel</h3>
 <div class="alert alert-danger" role="alert">
-  Неверный логин или пароль!
+  Invalid username or password!
 </div>
         <form method="post" action="/admin/login" class="mt-3" style="max-width:300px;">
-          <input name="user" class="form-control mb-2" placeholder="Логин" />
-          <input type="password" name="pass" class="form-control mb-2" placeholder="Пароль" />
-          <button class="btn btn-primary w-100">Войти</button>
+          <input name="user" class="form-control mb-2" placeholder="Login" />
+          <input type="password" name="pass" class="form-control mb-2" placeholder="Password" />
+          <button class="btn btn-primary w-100">Log In</button>
         </form>
       </body>
       </html>
@@ -108,9 +121,9 @@ export class AdminController {
       <body class="p-4">
         ${menu()}
         <h2>Bots</h2>
-        <a href="/admin/bot/create" class="btn btn-primary mb-3">+ Создать бота</a>
+        <a href="/admin/bot/create" class="btn btn-primary mb-3">+ Create bot</a>
         <table class="table table-bordered">
-          <tr><th>ID</th><th>Имя</th><th>Модуль</th><th>Описание</th><th>Промпт</th><th>Действия</th></tr>
+          <tr><th>ID</th><th>Name</th><th>Module</th><th>Description</th><th>Prompt</th><th>Actions</th></tr>
           ${bots
             .map(
                 (b) => `
@@ -121,9 +134,9 @@ export class AdminController {
                 <td>${b.description}</td>
                 <td>${b.prompt}</td>
                 <td>
-                  <a class="btn btn-sm btn-warning" href="/admin/bot/${b._id}">Редактировать</a>
-                  <a class="btn btn-sm btn-info" href="/admin/messages?bot=${b._id}">Сообщения</a>
-                  <a class="btn btn-sm btn-danger" href="/admin/bot/${b._id}/delete">Удалить</a>
+                  <a class="btn btn-sm btn-warning" href="/admin/bot/${b._id}">Edit</a>
+                  <a class="btn btn-sm btn-info" href="/admin/messages?bot=${b._id}">Messages</a>
+                  <a class="btn btn-sm btn-danger" href="/admin/bot/${b._id}/delete">Delete</a>
                 </td>
               </tr>
             `
@@ -146,14 +159,14 @@ export class AdminController {
       ${head('Bot')}
       <body class="p-4">
       ${menu()}
-      <h2>Создать бота</h2>
+      <h2>Create bot</h2>
       <form method="post" action="/admin/bot/create">
       <input type="text" class="form-control mb-2" required name="_id" placeholder="ID">
-        <input name="name" class="form-control mb-2" placeholder="Имя" />
-        <textarea name="description" class="form-control mb-2" placeholder="Описание"></textarea>
+        <input name="name" class="form-control mb-2" placeholder="Name" />
+        <textarea name="description" class="form-control mb-2" placeholder="Description"></textarea>
         <textarea name="prompt" class="form-control mb-2" placeholder="Prompt"></textarea>
-        <input name="module" class="form-control mb-2" placeholder="Модуль" />
-        <button class="btn btn-success">Создать</button>
+        <input name="module" class="form-control mb-2" placeholder="Module" />
+        <button class="btn btn-success">Create</button>
       </form>
       </body></html>
     `);
@@ -178,13 +191,13 @@ export class AdminController {
         return res.send(`
       <html>${head('Bot')}<body class="p-4">
       ${menu()}
-      <h2>Редактировать бота</h2>
+      <h2>Edit bot</h2>
       <form method="post" action="/admin/bot/${id}">
-        <input name="name" value="${bot.name}" class="form-control mb-2" />
-        <textarea name="description" class="form-control mb-2">${bot.description}</textarea>
-        <textarea name="prompt" class="form-control mb-2">${bot.prompt}</textarea>
-        <input name="module" value="${bot.module}" class="form-control mb-2" />
-        <button class="btn btn-success">Сохранить</button>
+        <input name="name" value="${bot.name}" class="form-control mb-2" placeholder="Name" />
+        <textarea name="description" class="form-control mb-2" placeholder="Description">${bot.description}</textarea>
+        <textarea name="prompt" class="form-control mb-2" placeholder="Prompt">${bot.prompt}</textarea>
+        <input name="module" value="${bot.module}" class="form-control mb-2" placeholder="Module" />
+        <button class="btn btn-success">Save</button>
       </form>
       </body></html>
     `);
@@ -211,7 +224,7 @@ export class AdminController {
     async messagesPage(@Req() req: Request, @Res() res: Response) {
         if (!checkSession(req)) return res.redirect('/admin/login');
 
-        const { user, bot, from, to } = req.query;
+        const {user, bot, from, to} = req.query;
 
         const messages = await this.admin.getMessages({
             user: user as string,
@@ -227,34 +240,83 @@ export class AdminController {
 ${head('Messages')}
 <body class="p-4">
 ${menu()}
-<h2>Сообщения</h2>
+<h2>Messages</h2>
 
 <form method="get" class="mb-3" style="max-width:600px;">
-  <input name="user" value="${user ?? ''}" class="form-control mb-1" placeholder="Логин пользователя" />
+  <input name="user" value="${user ?? ''}" class="form-control mb-1" placeholder="User ID" />
 
   <select name="bot" class="form-control mb-1">
-    <option value="">Все боты</option>
+    <option value="">All bots</option>
     ${bots.map(b => `<option value="${b._id}" ${bot == b._id ? 'selected' : ''}>${b.name}</option>`).join('')}
   </select>
 
   <input type="date" name="from" value="${from ?? ''}" class="form-control mb-1" />
   <input type="date" name="to" value="${to ?? ''}" class="form-control mb-1" />
-  <button class="btn btn-primary w-100">Фильтровать</button>
+  <button class="btn btn-primary w-100">Filter</button>
 </form>
 
 <table class="table table-striped">
-  <tr><th>Время</th><th>Роль</th><th>Пользователь</th><th>Бот</th><th>Текст</th></tr>
+  <tr><th>Time</th><th>Role</th><th>UserID</th><th>BotID</th><th>Text</th></tr>
   ${messages.map(m => `
     <tr>
       <td>${new Date(m.createdAt).toLocaleString()}</td>
       <td>${m.role}</td>
       <td>${m.userId}</td>
       <td>${m.botId}</td>
-      <td>${m.content}</td>
+      <td style="white-space: pre-wrap">${m.content}</td>
     </tr>
   `).join('')}
 </table>
 </body></html>
+`);
+    }
+
+    @Public()
+    @Get('users')
+    async usersPage(@Req() req: Request, @Res() res: Response) {
+        if (!checkSession(req)) return res.redirect('/admin/login');
+
+        const { id, email, from, to } = req.query;
+
+        const users = await this.admin.getUsers({
+            id: id as string,
+            email: email as string,
+        });
+
+        return res.send(`
+<html>
+${head('Users')}
+<body class="p-4">
+${menu()}
+<h2>Users</h2>
+
+<form method="get" class="mb-3" style="max-width:600px;">
+  <input name="id" value="${id ?? ''}" class="form-control mb-1" placeholder="User ID" />
+  <input name="email" value="${email ?? ''}" class="form-control mb-1" placeholder="Email" />
+  <button class="btn btn-primary w-100">Filter</button>
+</form>
+
+<table class="table table-striped table-bordered">
+  <tr>
+    <th>ID</th>
+    <th>Email</th>
+    <th>Actions</th>
+  </tr>
+  ${users.map(u => `
+    <tr>
+      <td>${u._id}</td>
+      <td>${u.email ?? '-'}</td>
+      <td>
+        <a class="btn btn-sm btn-info" href="/admin/messages?user=${u._id}">
+          messages
+        </a>
+      </td>
+    </tr>
+  `).join('')}
+</table>
+
+</body>
+</html>
 `);
     }
 }

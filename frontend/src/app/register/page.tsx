@@ -12,14 +12,14 @@ export default function RegisterPage() {
         <RegisterForm onSuccess={() => router.push('/')} />
         <View direction="row" justify="center" paddingTop={4}>
           <Text variant="body-2" color="neutral-faded">
-            Уже есть аккаунт?{' '}
+            Already have account?{' '}
           </Text>
           <Button
             variant="ghost"
             size="small"
             onClick={() => router.push('/login')}
           >
-            Войти
+            Log in
           </Button>
         </View>
       </View>

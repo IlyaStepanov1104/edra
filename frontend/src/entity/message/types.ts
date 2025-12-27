@@ -2,8 +2,8 @@ export interface IMessage {
     content: string;
     createdAt?: string;
     "_id": string,
-    "userId": string,
-    "botId": string,
+    "userId"?: string,
+    "botId"?: string,
     "role": "user" | 'assistant',
 }
 

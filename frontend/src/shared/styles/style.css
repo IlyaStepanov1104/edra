@@ -1,2 +1,14 @@
 @import 'tailwind.css';
 @import 'reshaped/themes/reshaped/tailwind.css';
+
+span.katex-display {
+    margin: 0;
+}
+
+.katex-display>span.katex {
+    text-align: left;
+}
+
+span.katex {
+    line-height: 1.5;
+}

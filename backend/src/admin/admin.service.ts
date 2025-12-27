@@ -3,12 +3,14 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Bot } from '@/chat/bot.entity';
 import { Message } from '@/chat/message.entity';
 import { Model } from 'mongoose';
+import {User} from "@/auth/user.entity";
 
 @Injectable()
 export class AdminService {
     constructor(
         @InjectModel(Bot.name) private botModel: Model<Bot>,
         @InjectModel(Message.name) private messageModel: Model<Message>,
+        @InjectModel(User.name) private userModel: Model<User>,
     ) {}
 
     // CRUD BOT
@@ -64,5 +66,17 @@ export class AdminService {
         }));
 
         return messages;
+    }
+
+    async getUsers(filters: {
+        id?: string;
+        email?: string;
+    }) {
+        const query: any = {};
+
+        if (filters.id) query._id = filters.id;
+        if (filters.email) query.email = { $regex: filters.email, $options: 'i' };
+
+        return this.userModel.find(query).sort({ createdAt: -1 }).limit(500);
     }
 }

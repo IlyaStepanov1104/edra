@@ -22,6 +22,7 @@
     "react-dom": "19.1.0",
     "react-router-dom": "^7.9.4",
     "react-tooltip": "^5.29.1",
+    "remark-math": "^6.0.0",
     "reshaped": "^3.8.5"
   },
   "devDependencies": {

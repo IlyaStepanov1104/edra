@@ -42,8 +42,8 @@ export class ChatService {
     try {
       response = await this.openaiService.getBotResponse(botId, messages);
     } catch (error) {
-      response = 'Извините, произошла ошибка. Пожалуйста, попробуйте позже.';
-      console.error('Ошибка при генерации ответа бота:', error);
+      response = 'Sorry, there was a mistake. Please try again later.';
+      console.error('Error when generating the bot\'s response:', error);
     }
 
     await this.messageModel.create({

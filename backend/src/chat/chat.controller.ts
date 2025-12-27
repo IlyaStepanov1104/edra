@@ -1,8 +1,8 @@
-import { Controller, Post, Body, UseGuards, Req, Get, Param } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Req, Get, Param, UseInterceptors, UploadedFile, Res, HttpException, HttpStatus } from '@nestjs/common';
 import { ChatService } from './chat.service';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
 import { Request } from 'express';
-import { JwtPayload } from '../auth/types/jwt-payload.interface';
+import { JwtPayload } from '@/auth/types/jwt-payload.interface';
 
 @Controller('api/chat')
 export class ChatController {

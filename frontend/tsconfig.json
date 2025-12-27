@@ -41,7 +41,8 @@
       "@fsd-pages/*": [
         "src/fsd-pages/*"
       ]
-    }
+    },
+    "esModuleInterop": true
   },
   "include": [
     "next-env.d.ts",
@@ -51,5 +52,5 @@
   ],
   "exclude": [
     "node_modules"
-  ],
+  ]
 }

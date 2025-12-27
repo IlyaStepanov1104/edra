@@ -12,14 +12,14 @@ export default function LoginPage() {
       <LoginForm onSuccess={() => router.push("/")} />
       <View direction="row" justify="center" paddingTop={4}>
         <Text variant="body-2" color="neutral-faded">
-          Нет аккаунта?{" "}
+          Not have account?{" "}
         </Text>
         <Button
           variant="ghost"
           size="small"
           onClick={() => router.push("/register")}
         >
-          Зарегистрироваться
+          Register
         </Button>
       </View>
     </View>

@@ -27,6 +27,6 @@ export function middleware(request: NextRequest) {
 // src/middleware.ts
 export const config = {
   matcher: ["/((?!api|_next/|favicon.ico).*)"],
-  runtime: "nodejs", // 👈 добавь это
+  runtime: "nodejs",
 };
 

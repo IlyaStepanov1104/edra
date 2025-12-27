@@ -3,12 +3,21 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"cd backend && npm run start:dev\" \"cd frontend && npm run dev\"",
+    "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm run dev\"",
     "install-all": "npm install && cd backend && npm install && cd ../frontend && npm install"
   },
   "devDependencies": {
     "concurrently": "^8.2.2",
     "css-loader": "^7.1.2",
     "style-loader": "^4.0.0"
+  },
+  "dependencies": {
+    "axios": "^1.13.2",
+    "katex": "^0.16.25",
+    "multer": "^2.0.2",
+    "qrcode.react": "^4.2.0",
+    "react-markdown": "^10.1.0",
+    "rehype-katex": "^7.0.1",
+    "remark-gfm": "^4.0.1"
   }
 }

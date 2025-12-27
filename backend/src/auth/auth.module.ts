@@ -5,9 +5,16 @@ import { AuthService } from '@/auth/auth.service';
 import { AuthController } from '@/auth/auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from '@/auth/jwt.strategy';
+import {ConfigModule} from "@nestjs/config";
 
 @Module({
   imports: [
+      ConfigModule.forRoot({
+          envFilePath: [
+              `${process.cwd()}/.env`,
+              `${process.cwd()}/../.env`
+          ],
+      }),
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     JwtModule.register({
       secret: process.env.JWT_SECRET || 'secretKey',
@@ -16,6 +23,6 @@ import { JwtStrategy } from '@/auth/jwt.strategy';
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy],
-  exports: [AuthService, JwtModule],
+  exports: [AuthService, JwtModule, JwtStrategy],
 })
 export class AuthModule {}

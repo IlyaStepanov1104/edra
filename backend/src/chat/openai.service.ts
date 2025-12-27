@@ -56,7 +56,6 @@ export class OpenaiService {
 
   async getBotResponse(botId: string, messages: OpenAIChatMessage[]) {
     const botConfig = BOTS_CONFIG[botId] || BOTS_CONFIG['information'];
-    console.log(`Using bot configuration for botId: ${botId}:`, botConfig);
     const response = await this.openai.chat.completions.create({
       model: botConfig.model,
       messages,

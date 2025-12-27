@@ -1,6 +1,7 @@
 import "./globals.css";
-import { ClientLayout } from "@/app/ClientLayout";
-import { Inter } from "next/font/google";
+import {Inter} from "next/font/google";
+import "reshaped/themes/slate/theme.css";
+import {Reshaped} from "reshaped";
 
 const inter = Inter({
     subsets: ["latin"],
@@ -14,9 +15,9 @@ export default function RootLayout({
     return (
         <html lang="en">
         <body>
-        <ClientLayout>
+        <Reshaped theme='slate'>
             {children}
-        </ClientLayout>
+        </Reshaped>
         </body>
         </html>
     );

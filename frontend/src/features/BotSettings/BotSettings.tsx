@@ -22,7 +22,7 @@ export default function BotSettings() {
       const response = await api.get('/bots');
       setBots(response.data);
     } catch (error) {
-      message.error('Ошибка при загрузке ботов');
+      message.error('Error with bots loading');
     } finally {
       setLoading(false);
     }
@@ -31,19 +31,19 @@ export default function BotSettings() {
   const handleUpdatePrompt = async (botId: string, prompt: string) => {
     try {
       await api.put(`/bots/${botId}/prompt`, { prompt });
-      message.success('Промпт успешно обновлен');
+      message.success('Prompt has been successfully updated');
       fetchBots();
     } catch (error) {
-      message.error('Ошибка при обновлении промпта');
+      message.error('Error updating the product');
     }
   };
 
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold mb-6">Настройки ботов</h1>
+      <h1 className="text-2xl font-bold mb-6">Bots settings</h1>
       
       {loading ? (
-        <div>Загрузка...</div>
+        <div>Loading...</div>
       ) : (
         <div className="space-y-6">
           {bots.map(bot => (
@@ -57,12 +57,12 @@ export default function BotSettings() {
                   handleUpdatePrompt(bot._id, values.prompt)
                 }
               >
-                <Form.Item name="prompt" label="Промпт">
+                <Form.Item name="prompt" label="Prompt">
                   <Input.TextArea rows={6} className="w-full" />
                 </Form.Item>
                 
                 <Button type="primary" htmlType="submit">
-                  Сохранить
+                  Save
                 </Button>
               </Form>
             </div>
