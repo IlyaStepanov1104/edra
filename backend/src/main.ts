@@ -1,9 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app.module';
-import {Module} from "@nestjs/common";
-import {ConfigModule} from "@nestjs/config";
-import {MongooseModule} from "@nestjs/mongoose";
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
