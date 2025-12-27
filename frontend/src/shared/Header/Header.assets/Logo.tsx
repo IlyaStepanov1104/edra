@@ -1,6 +1,6 @@
 import { FC, SVGProps } from "react";
 
-export const Logo: FC<SVGProps<any>> = (props) => {
+export const Logo: FC<SVGProps<never>> = (props) => {
     return (
         <div
             style={{padding: '30px', boxSizing: 'content-box'}}

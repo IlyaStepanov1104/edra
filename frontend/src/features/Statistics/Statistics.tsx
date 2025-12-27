@@ -45,6 +45,7 @@ export const Statistics: FC = () => {
         ]);
       } catch (err) {
         setError('Failed to load statistics');
+        console.error(err);
       }
     };
 

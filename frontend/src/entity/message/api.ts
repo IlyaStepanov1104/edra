@@ -1,6 +1,5 @@
 import {IChatHistory} from "./types";
 import {getChatHistory, sendMessage} from "@shared/lib/api";
-import {PageModel} from "@shared/lib/pages";
 
 export const getBotChatHistory = async (botSlug: string | null, token: string | null): Promise<IChatHistory> => {
     console.log("%c 1 --> Line: 6||api.ts\n 'getBotChatHistory: ","color:#f0f;", botSlug, token);

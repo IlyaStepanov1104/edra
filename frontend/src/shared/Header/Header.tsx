@@ -1,8 +1,8 @@
 'use client';
 
-import { FC, useState, useRef, useEffect } from 'react';
+import { FC } from 'react';
 import { usePathname } from 'next/navigation';
-import { Pages, PagesType } from "@shared/lib/pages";
+import { PagesType } from "@shared/lib/pages";
 import styles from './Header.module.css';
 import { Logo } from "./Header.assets/Logo";
 import { Button, DropdownMenu } from "reshaped";

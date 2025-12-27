@@ -11,7 +11,7 @@ import {Logo} from "@shared/Header/Header.assets/Logo";
 import styles from "@shared/Header/Header.module.css";
 import {postImage} from "@shared/lib/api";
 
-// @ts-ignore
+// @ts-expect-error error generic
 type OnChangeArgs = { event?: DragEvent<HTMLDivElement> | ChangeEvent<HTMLInputElement>, name: string, value: File[] };
 
 export const PhotoUploadPage = () => {

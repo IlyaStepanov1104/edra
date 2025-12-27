@@ -1,9 +1,9 @@
 'use client';
-import {FC, useEffect} from 'react'
-import { Chat } from "@features/Chat";
-import { BotModel } from "@/entity/bot";
-import { useUnit } from "effector-react";
-import { Dashboard } from "@features/Dashboard";
+import {FC} from 'react'
+import {Chat} from "@features/Chat";
+import {BotModel} from "@/entity/bot";
+import {useUnit} from "effector-react";
+import {Dashboard} from "@features/Dashboard";
 
 export const MainPage: FC = ({}) => {
     const bot = useUnit(BotModel.$currentBot);

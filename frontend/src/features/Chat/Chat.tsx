@@ -68,7 +68,7 @@ export const Chat: FC = ({}) => {
 
     useEffect(() => {
         if (params?.bot !== botSlug) setBotSlug(params?.bot ?? null);
-    }, [params]);
+    }, [botSlug, params]);
 
     const handleGenerateQR = async () => {
         if (!botSlug || !token) return;
@@ -93,7 +93,7 @@ export const Chat: FC = ({}) => {
 
 
         return () => clearInterval(interval);
-    }, [qrModalOpen]);
+    }, [qrHash, qrModalOpen, qrResult?.status, token]);
 
     useEffect(() => {
         setChatHistory([]);
