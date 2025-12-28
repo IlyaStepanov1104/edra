@@ -1,30 +1,14 @@
 import axios from 'axios';
-
-interface LoginData {
-    email: string;
-    password: string;
-}
-
-interface RegisterData {
-    email: string;
-    password: string;
-    name: string;
-}
+import {getUserToken} from "@shared/lib/auth";
 
 const api = axios.create({
     baseURL: `${process.env.NEXT_PUBLIC_API_URL ?? ''}/api`,
-    withCredentials: true
 });
 
-export const login = async (data: LoginData) => {
-    const response = await api.post('/auth/login', data);
-    return response.data;
-};
-
-export const register = async (data: RegisterData) => {
-    const response = await api.post('/auth/register', data);
-    return response.data;
-};
+api.interceptors.request.use((config) => {
+    config.headers['X-Client-Token'] = getUserToken();
+    return config;
+});
 
 interface ChatMessage {
     userId: string;
@@ -34,10 +18,8 @@ interface ChatMessage {
     createdAt: string;
 }
 
-export const getChatHistory = async (botSlug: string, token: string): Promise<ChatMessage[]> => {
-    const response = await api.get(`/chat/${botSlug}/history`, {
-        headers: {Authorization: `Bearer ${token}`}
-    });
+export const getChatHistory = async (botSlug: string): Promise<ChatMessage[]> => {
+    const response = await api.get(`/chat/${botSlug}/history`);
     return response.data;
 };
 
@@ -50,18 +32,15 @@ export interface BackendBot {
     createdAt?: Date;
 }
 
-export const getBotList = async (module: string, token: string): Promise<BackendBot[]> => {
+export const getBotList = async (module: string): Promise<BackendBot[]> => {
     const response = await api.get(`/bots`, {
-        headers: {Authorization: `Bearer ${token}`},
         params: {module}
     });
     return response.data;
 };
 
-export const sendMessage = async (botSlug: string, message: string, token: string): Promise<string> => {
-    const response = await api.post(`/chat/${botSlug}/send`, {message}, {
-        headers: {Authorization: `Bearer ${token}`}
-    });
+export const sendMessage = async (botSlug: string, message: string): Promise<string> => {
+    const response = await api.post(`/chat/${botSlug}/send`, {message});
     return response.data;
 };
 
@@ -74,10 +53,8 @@ interface StatisticsData {
     updatedAt?: string;
 }
 
-export const getStatistics = async (botSlug: string, token: string): Promise<StatisticsData> => {
-    const response = await api.get(`/statistics/${botSlug}`, {
-        headers: {Authorization: `Bearer ${token}`}
-    });
+export const getStatistics = async (botSlug: string): Promise<StatisticsData> => {
+    const response = await api.get(`/statistics/${botSlug}`);
     return response.data;
 };
 
@@ -85,10 +62,8 @@ interface QRCodeLinkData {
     hash: string;
 }
 
-export const getQRCodeLink = async (token: string): Promise<QRCodeLinkData> => {
-    const response = await api.get(`/qr/generate`, {
-        headers: {Authorization: `Bearer ${token}`}
-    });
+export const getQRCodeLink = async (): Promise<QRCodeLinkData> => {
+    const response = await api.get(`/qr/generate`);
     return response.data;
 };
 
@@ -103,17 +78,13 @@ export interface LatexResult {
     error?: string;
 }
 
-export const getLatexResult = async (hash: string, token: string): Promise<LatexResult> => {
-    const response = await api.get(`/qr/status/${hash}`, {
-        headers: {Authorization: `Bearer ${token}`},
-    });
+export const getLatexResult = async (hash: string): Promise<LatexResult> => {
+    const response = await api.get(`/qr/status/${hash}`);
     return response.data;
 };
 
-export const unsubscribeLatexResult = async (hash: string, token: string) => {
-    const response = await api.get(`/qr/status/${hash}/unsubscribe`, {
-        headers: {Authorization: `Bearer ${token}`},
-    });
+export const unsubscribeLatexResult = async (hash: string) => {
+    const response = await api.get(`/qr/status/${hash}/unsubscribe`);
     return response.data;
 };
 

@@ -7,7 +7,7 @@ import {BackendBot, getBotList} from "@shared/lib/api";
 const informationPageBotList: BackendBot[] = [
     {
         _id: "information",
-        name: "information",
+        name: "Information",
         description: "",
         prompt: "",
         module: "information",
@@ -32,8 +32,7 @@ export const BotModel = atom(() => {
             return informationPageBotList;
         }
 
-        const token = localStorage.getItem('jwtToken') ?? '';
-        return await getBotList(page, token);
+        return await getBotList(page);
     });
 
     sample({

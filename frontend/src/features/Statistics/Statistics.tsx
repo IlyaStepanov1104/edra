@@ -1,7 +1,6 @@
 import { FC, useEffect, useState } from 'react';
 import { Card, Text, View } from 'reshaped';
 import { getStatistics } from '@shared/lib/api';
-import { useAuth } from '@shared/lib/auth';
 import { useParams } from 'react-router-dom';
 
 interface StatisticsData {
@@ -19,7 +18,6 @@ interface StatItem {
 }
 
 export const Statistics: FC = () => {
-  const { getToken } = useAuth();
   const [stats, setStats] = useState<StatItem[]>([]);
   const [error, setError] = useState('');
   const params = useParams();
@@ -28,15 +26,9 @@ export const Statistics: FC = () => {
   useEffect(() => {
     if (!botSlug) return;
 
-    const token = getToken();
-    if (!token) {
-      setError('Authentication required');
-      return;
-    }
-
     const loadStats = async () => {
       try {
-        const data: StatisticsData = await getStatistics(botSlug, token);
+        const data: StatisticsData = await getStatistics(botSlug);
         setStats([
           { title: 'Accuracy', value: `${data.metrics?.accuracy || 0}%` },
           { title: 'Response Time', value: `${data.metrics?.avgResponseTime || 0}s` },
@@ -50,7 +42,7 @@ export const Statistics: FC = () => {
     };
 
     loadStats();
-  }, [botSlug, getToken]);
+  }, [botSlug]);
 
   if (!botSlug) {
     return (

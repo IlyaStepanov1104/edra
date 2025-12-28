@@ -1,14 +1,12 @@
 'use client';
 
-import { FC } from 'react';
-import { usePathname } from 'next/navigation';
-import { PagesType } from "@shared/lib/pages";
+import {FC} from 'react';
+import {usePathname} from 'next/navigation';
+import {PagesType} from "@shared/lib/pages";
 import styles from './Header.module.css';
-import { Logo } from "./Header.assets/Logo";
-import { Button, DropdownMenu } from "reshaped";
-import { IconUser } from "./Header.assets/IconUser";
-import { useParams, useRouter } from "next/navigation";
-import { useAuth } from "@shared/lib/auth";
+import {Logo} from "./Header.assets/Logo";
+import {Button} from "reshaped";
+import {useParams, useRouter} from "next/navigation";
 
 interface ButtonProps {
     page: PagesType;
@@ -33,17 +31,13 @@ export const Header: FC = () => {
     const params = useParams();
     const currentPage = params?.page as PagesType;
     const router = useRouter();
-    const pathname = usePathname();
-    const isAuthPage = ['/login', '/register'].includes(pathname || '');
-    const { removeToken } = useAuth();
 
     const getHandleClick = (page: string) => () => router.push(`/${page}`)
 
     return (
         <div className={styles.Header}>
             <Logo className={styles.HeaderLogo}/>
-            {!isAuthPage && (
-              <nav className={styles.HeaderNav}>
+            <nav className={styles.HeaderNav}>
                 {buttons.map((button) => (
                     <Button
                         key={button.page}
@@ -55,32 +49,7 @@ export const Header: FC = () => {
                         {button.text}
                     </Button>
                 ))}
-                <DropdownMenu>
-                    <DropdownMenu.Trigger>
-                        {(attributes) => (
-                            <Button
-                                icon={IconUser}
-                                color='primary'
-                                variant={currentPage === 'profile' ? 'solid' : 'ghost'}
-                                size='xlarge'
-                                rounded
-                                {...attributes}
-                            />
-                        )}
-                    </DropdownMenu.Trigger>
-                    <DropdownMenu.Content>
-                        <DropdownMenu.Item
-                            onClick={() => {
-                                removeToken();
-                                router.push('/login');
-                            }}
-                        >
-                            Logout
-                        </DropdownMenu.Item>
-                    </DropdownMenu.Content>
-                </DropdownMenu>
-              </nav>
-            )}
+            </nav>
         </div>
     );
 }

@@ -1,37 +1,15 @@
-export const useAuth = () => {
-  const getToken = (): string | null => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('jwtToken');
-    }
-    return null;
-  };
+import {v4 as uuidv4} from 'uuid';
 
-  const setToken = (token: string): void => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('jwtToken', token);
-      document.cookie = `jwtToken=${token}; path=/; max-age=86400; secure=true; samesite=strict`;
-    }
-  };
+export const getUserToken = (): string | null => {
+        if (typeof window !== 'undefined') {
+            let token = localStorage.getItem('token');
 
-  const removeToken = (): void => {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('jwtToken');
-      document.cookie = 'jwtToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
-    }
-  };
+            if (!token) {
+                token = uuidv4();
+                localStorage.setItem('token', token);
+            }
 
-  const isAuthenticated = (redirect = false): boolean => {
-    const hasToken = !!getToken();
-    if (!hasToken && redirect && typeof window !== 'undefined') {
-      window.location.href = '/login';
-    }
-    return hasToken;
-  };
-
-  return {
-    getToken,
-    setToken,
-    removeToken,
-    isAuthenticated
-  };
-};
+            return token;
+        }
+        return null;
+    };

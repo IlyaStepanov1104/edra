@@ -13,7 +13,6 @@ import {IconSend} from "@features/Chat/Chat.assets/IconSend";
 import {PageModel} from "@shared/lib/pages";
 import {IconQRCode} from './Chat.assets/IconQRCode';
 import {SimpleTooltip} from "@shared/SimpleTooltip";
-import {useAuth} from "@shared/lib/auth";
 import {MessageRender} from "@shared/MessageRender";
 import {getLatexResult, getQRCodeLink, LatexResult, unsubscribeLatexResult} from "@shared/lib/api";
 import {QRCode} from "antd";
@@ -58,31 +57,28 @@ export const Chat: FC = ({}) => {
     const [isMessageLoading, setIsMessageLoading] = useState(false);
     const [messageLoadingCounter, setMessageLoadingCounter] = useState<number>(0);
     const chatContainerRef = useRef<HTMLDivElement>(null);
-    const {getToken} = useAuth();
-    const token = getToken();
     const [qrModalOpen, setQrModalOpen] = useState(false);
     const [qrHash, setQrHash] = useState<string | null>(null);
-    const QRLink = `${window.origin}/photo-upload/${qrHash}`;
+    const QRLink = `${window?.origin}/photo-upload/${qrHash}`;
     const [qrResult, setQrResult] = useState<LatexResult | null>(null);
-    console.log("%c 1 --> Line: 67||Chat.tsx\n qrResult: ", "color:#f0f;", qrResult);
 
     useEffect(() => {
         if (params?.bot !== botSlug) setBotSlug(params?.bot ?? null);
     }, [botSlug, params]);
 
     const handleGenerateQR = async () => {
-        if (!botSlug || !token) return;
+        if (!botSlug) return;
 
-        const data = await getQRCodeLink(token);
+        const data = await getQRCodeLink();
         setQrHash(data.hash);
         setQrModalOpen(true);
     };
 
     useEffect(() => {
-        if (!qrModalOpen || !qrHash || !token) return;
+        if (!qrModalOpen || !qrHash) return;
 
         const interval = setInterval(async () => {
-            const result = await getLatexResult(qrHash, token);
+            const result = await getLatexResult(qrHash);
             if (result.status !== qrResult?.status) {
                 setQrResult(result);
             }
@@ -93,11 +89,11 @@ export const Chat: FC = ({}) => {
 
 
         return () => clearInterval(interval);
-    }, [qrHash, qrModalOpen, qrResult?.status, token]);
+    }, [qrHash, qrModalOpen, qrResult?.status]);
 
     useEffect(() => {
         setChatHistory([]);
-        getBotChatHistory(botSlug, token)
+        getBotChatHistory(botSlug)
             .then(
                 (history) => setChatHistory(() => {
                     if (isInformationBot) return [...informationBotHistory, ...history]
@@ -105,7 +101,7 @@ export const Chat: FC = ({}) => {
                 })
             )
             .catch(console.error);
-    }, [botSlug, isInformationBot, token]);
+    }, [botSlug, isInformationBot]);
 
     useEffect(() => {
         if (chatContainerRef.current) {
@@ -124,7 +120,7 @@ export const Chat: FC = ({}) => {
     }, [isMessageLoading]);
 
     const getHandleSend = () => async () => {
-        if (!inputValue || !token || !botSlug) return;
+        if (!inputValue || !botSlug) return;
 
         try {
             setChatHistory((prev) => [...prev, {
@@ -137,7 +133,7 @@ export const Chat: FC = ({}) => {
             setInputValue('');
             setIsMessageLoading(true);
 
-            const response = await sendBotMessage(botSlug, inputValue, token);
+            const response = await sendBotMessage(botSlug, inputValue);
 
             setChatHistory((prev) => [...prev, {
                 _id: '',
@@ -166,7 +162,7 @@ export const Chat: FC = ({}) => {
     const insertQrResultInChat = () => {
         setInputValue((prev) => `${prev}\n${qrResult?.result ?? ''}`);
         setQrModalOpen(false);
-        unsubscribeLatexResult(qrHash ?? '', token ?? '');
+        unsubscribeLatexResult(qrHash ?? '');
         setQrResult(null);
         setQrHash(null);
     }

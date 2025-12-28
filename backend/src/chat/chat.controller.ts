@@ -1,29 +1,35 @@
-import { Controller, Post, Body, UseGuards, Req, Get, Param, UseInterceptors, UploadedFile, Res, HttpException, HttpStatus } from '@nestjs/common';
-import { ChatService } from './chat.service';
-import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
-import { Request } from 'express';
-import { JwtPayload } from '@/auth/types/jwt-payload.interface';
+import {
+    Controller,
+    Post,
+    Body,
+    Req,
+    Get,
+    Param,
+} from '@nestjs/common';
+import {ChatService} from './chat.service';
+import {Request} from 'express';
 
 @Controller('api/chat')
 export class ChatController {
-  constructor(private chatService: ChatService) {}
+    constructor(private chatService: ChatService) {
+    }
 
-  @Post(':botId/send')
-  @UseGuards(JwtAuthGuard)
-  async sendMessage(
-    @Req() req: Request & { user: JwtPayload },
-    @Param('botId') botId: string,
-    @Body('message') message: string
-  ) {
-    return this.chatService.sendMessage(req.user.userId, botId, message);
-  }
+    @Post(':botId/send')
+    async sendMessage(
+        @Req() req: Request & { clientToken: string },
+        @Param('botId') botId: string,
+        @Body('message') message: string
+    ) {
+        const clientToken = req.clientToken;
+        return this.chatService.sendMessage(clientToken, botId, message);
+    }
 
-  @Get(':botId/history')
-  @UseGuards(JwtAuthGuard)
-  async getHistory(
-    @Req() req: Request & { user: JwtPayload },
-    @Param('botId') botId: string
-  ) {
-    return this.chatService.getChatHistory(req.user.userId, botId);
-  }
+    @Get(':botId/history')
+    async getHistory(
+        @Req() req: Request & { clientToken: string },
+        @Param('botId') botId: string
+    ) {
+        const clientToken = req.clientToken;
+        return this.chatService.getChatHistory(clientToken, botId);
+    }
 }

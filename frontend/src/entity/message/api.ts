@@ -1,12 +1,11 @@
 import {IChatHistory} from "./types";
 import {getChatHistory, sendMessage} from "@shared/lib/api";
 
-export const getBotChatHistory = async (botSlug: string | null, token: string | null): Promise<IChatHistory> => {
-    console.log("%c 1 --> Line: 6||api.ts\n 'getBotChatHistory: ","color:#f0f;", botSlug, token);
-    if (!botSlug || !token) return [];
+export const getBotChatHistory = async (botSlug: string | null): Promise<IChatHistory> => {
+    if (!botSlug) return [];
 
     try {
-        const history = await getChatHistory(botSlug, token);
+        const history = await getChatHistory(botSlug);
         return history.map((message, index) => ({
             _id: `${index + 1}`,
             ...message
@@ -19,11 +18,10 @@ export const getBotChatHistory = async (botSlug: string | null, token: string | 
 
 export const sendBotMessage = async (
     botSlug: string,
-    message: string,
-    token: string
+    message: string
 ): Promise<string> => {
     try {
-        return await sendMessage(botSlug, message, token);
+        return await sendMessage(botSlug, message);
     } catch (error) {
         console.error('Failed to send message:', error);
         throw error;

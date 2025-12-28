@@ -39,7 +39,6 @@ function menu() {
     <nav class="mb-4">
       <a href="/admin" class="btn btn-outline-primary btn-sm">Bots</a>
       <a href="/admin/messages" class="btn btn-outline-primary btn-sm">Messages</a>
-      <a href="/admin/users" class="btn btn-outline-primary btn-sm">Users</a>
       <a href="/admin/logout" class="btn btn-outline-danger btn-sm">Logout</a>
     </nav>
   `;
@@ -132,7 +131,7 @@ export class AdminController {
                 <td>${b.name}</td>
                 <td>${b.module}</td>
                 <td>${b.description}</td>
-                <td>${b.prompt}</td>
+                <td style="white-space: pre-wrap">${b.prompt}</td>
                 <td>
                   <a class="btn btn-sm btn-warning" href="/admin/bot/${b._id}">Edit</a>
                   <a class="btn btn-sm btn-info" href="/admin/messages?bot=${b._id}">Messages</a>
@@ -268,55 +267,6 @@ ${menu()}
   `).join('')}
 </table>
 </body></html>
-`);
-    }
-
-    @Public()
-    @Get('users')
-    async usersPage(@Req() req: Request, @Res() res: Response) {
-        if (!checkSession(req)) return res.redirect('/admin/login');
-
-        const { id, email, from, to } = req.query;
-
-        const users = await this.admin.getUsers({
-            id: id as string,
-            email: email as string,
-        });
-
-        return res.send(`
-<html>
-${head('Users')}
-<body class="p-4">
-${menu()}
-<h2>Users</h2>
-
-<form method="get" class="mb-3" style="max-width:600px;">
-  <input name="id" value="${id ?? ''}" class="form-control mb-1" placeholder="User ID" />
-  <input name="email" value="${email ?? ''}" class="form-control mb-1" placeholder="Email" />
-  <button class="btn btn-primary w-100">Filter</button>
-</form>
-
-<table class="table table-striped table-bordered">
-  <tr>
-    <th>ID</th>
-    <th>Email</th>
-    <th>Actions</th>
-  </tr>
-  ${users.map(u => `
-    <tr>
-      <td>${u._id}</td>
-      <td>${u.email ?? '-'}</td>
-      <td>
-        <a class="btn btn-sm btn-info" href="/admin/messages?user=${u._id}">
-          messages
-        </a>
-      </td>
-    </tr>
-  `).join('')}
-</table>
-
-</body>
-</html>
 `);
     }
 }
