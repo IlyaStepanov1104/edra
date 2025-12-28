@@ -47,7 +47,8 @@
 }
 
 .QRCodeButtonWrapper {
-    height: 100%;
+    width: 144px;
+    height: 144px;
 }
 
 button.QRCodeButton {
