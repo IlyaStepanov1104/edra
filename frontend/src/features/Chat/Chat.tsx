@@ -59,7 +59,7 @@ export const Chat: FC = ({}) => {
     const chatContainerRef = useRef<HTMLDivElement>(null);
     const [qrModalOpen, setQrModalOpen] = useState(false);
     const [qrHash, setQrHash] = useState<string | null>(null);
-    const QRLink = `${window?.origin}/photo-upload/${qrHash}`;
+    const QRLink = `/photo-upload/${qrHash}`;
     const [qrResult, setQrResult] = useState<LatexResult | null>(null);
 
     useEffect(() => {
