@@ -2,6 +2,9 @@
   "name": "edra-backend",
   "version": "1.0.0",
   "main": "dist/main.js",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "start": "node dist/main.js",
     "dev": "nest start --watch",
