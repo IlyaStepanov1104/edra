@@ -7,7 +7,7 @@ async function bootstrap() {
 
     // Enable CORS
     app.enableCors({
-        origin: ['http://localhost:3001', 'https://edra-test.duckdns.org'], // разрешить оба домена для dev/prod
+        origin: ['http://localhost:3001', 'https://edra-en.duckdns.org', 'https://edra-en.vercel.app'], // разрешить оба домена для dev/prod
         methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
         allowedHeaders: 'Content-Type,Authorization', // обязательно добавить Content-Type
         credentials: true,
