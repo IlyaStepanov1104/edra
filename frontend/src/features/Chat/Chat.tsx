@@ -47,6 +47,18 @@ const Marker: FC<{ isMe: boolean }> = ({isMe}) => {
     ></Avatar>;
 }
 
+const getOrigin = () => {
+    if (typeof window !== 'undefined') {
+        return window.origin;
+    }
+
+    if (typeof global !== 'undefined') {
+        return global.origin;
+    }
+
+    return 'https://edra-en.vercel.app';
+}
+
 export const Chat: FC = ({}) => {
     const params = useUnit(PageModel.$pageParams);
     const [botSlug, setBotSlug] = useState(params?.bot ?? null);
@@ -59,7 +71,7 @@ export const Chat: FC = ({}) => {
     const chatContainerRef = useRef<HTMLDivElement>(null);
     const [qrModalOpen, setQrModalOpen] = useState(false);
     const [qrHash, setQrHash] = useState<string | null>(null);
-    const QRLink = `/photo-upload/${qrHash}`;
+    const QRLink = `${getOrigin()}/photo-upload/${qrHash}`;
     const [qrResult, setQrResult] = useState<LatexResult | null>(null);
 
     useEffect(() => {
