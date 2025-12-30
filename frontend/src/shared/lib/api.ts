@@ -44,18 +44,23 @@ export const sendMessage = async (botSlug: string, message: string): Promise<str
     return response.data;
 };
 
-interface StatisticsData {
-    metrics: {
-        accuracy?: number;
-        avgResponseTime?: number;
-        sessionsCount?: number;
-    };
+export interface StatisticsData {
+    understandingPercent: number;
+    comment: string;
     updatedAt?: string;
 }
 
+const DEFAULT_STATISTICS: StatisticsData = {
+    understandingPercent: 0,
+    comment: 'string',
+};
+
 export const getStatistics = async (botSlug: string): Promise<StatisticsData> => {
     const response = await api.get(`/statistics/${botSlug}`);
-    return response.data;
+    const data = response.data;
+    if (data === "") return DEFAULT_STATISTICS;
+
+    return data;
 };
 
 interface QRCodeLinkData {

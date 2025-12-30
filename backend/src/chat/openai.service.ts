@@ -29,16 +29,6 @@ export const BOTS_CONFIG: Record<string, BotConfig> = {
     model: 'gpt-4',
     temperature: 0.7,
     systemMessage: 'You are a helpful assistant that provides general information'
-  },
-  'reading-writing-1': {
-    model: 'gpt-4',
-    temperature: 0.7,
-    systemMessage: 'You are an expert in reading comprehension and writing'
-  },
-  'math-1': {
-    model: 'gpt-4',
-    temperature: 0.3,
-    systemMessage: 'You are a math tutor specializing in algebra'
   }
 };
 

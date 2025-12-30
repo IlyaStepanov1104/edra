@@ -1,22 +1,24 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
+export interface BotStatistics {
+    understandingPercent: number; // 0–100
+    comment: string;              // короткий текст
+}
+
 @Schema()
 export class Statistics extends Document {
-  @Prop({ required: true })
-  userId: string;
+    @Prop({ required: true, unique: true })
+    userId: string;
 
-  @Prop({ required: true })
-  botId: string;
+    @Prop({
+        type: Object,
+        default: {},
+    })
+    metrics: Record<string, BotStatistics>;
 
-  @Prop({ type: Object, required: true })
-  metrics: Record<string, any>;
-
-  @Prop({ default: Date.now })
-  createdAt: Date;
-
-  @Prop()
-  updatedAt: Date;
+    @Prop({ default: Date.now })
+    updatedAt: Date;
 }
 
 export const StatisticsSchema = SchemaFactory.createForClass(Statistics);

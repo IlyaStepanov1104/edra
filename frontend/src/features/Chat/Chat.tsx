@@ -240,7 +240,7 @@ export const Chat: FC = ({}) => {
                         />
                     </View>
                 </div>
-                {page === 'math' && (
+                {(page === 'math' || page === 'practice-exam') && (
                     <div
                         data-tooltip-id="qr-code-button"
                         className={styles.QRCodeButtonWrapper}

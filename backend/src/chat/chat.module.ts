@@ -6,12 +6,14 @@ import { ChatController } from './chat.controller';
 import { BotController } from './bot.controller';
 import { Message, MessageSchema } from './message.entity';
 import { Bot, BotSchema } from './bot.entity';
+import {ChatSession, ChatSessionSchema} from "@/chat/chat-session.entity";
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: Message.name, schema: MessageSchema },
-      { name: Bot.name, schema: BotSchema }
+        { name: Bot.name, schema: BotSchema },
+        { name: ChatSession.name, schema: ChatSessionSchema }
     ]),
   ],
   controllers: [ChatController, BotController],

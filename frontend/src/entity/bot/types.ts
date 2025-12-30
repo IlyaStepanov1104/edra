@@ -7,12 +7,8 @@ export interface IBot {
 }
 
 export interface IBotStatisticsItem {
-  id: number;
-  name: string;
-  title: string;
-  progress: number;
-  percent: number;
-  value: number;
-  maxValue: number;
-  unit?: string;
+    name: string;
+    title: string;
+    percent: number;
+    comment: string;
 }
