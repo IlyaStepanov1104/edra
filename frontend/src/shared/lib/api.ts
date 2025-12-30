@@ -52,7 +52,7 @@ export interface StatisticsData {
 
 const DEFAULT_STATISTICS: StatisticsData = {
     understandingPercent: 0,
-    comment: 'string',
+    comment: 'No data available yet. Start interacting with this bot to see your progress and personalized feedback.',
 };
 
 export const getStatistics = async (botSlug: string): Promise<StatisticsData> => {
