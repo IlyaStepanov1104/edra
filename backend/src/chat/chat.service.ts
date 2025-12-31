@@ -5,6 +5,7 @@ import {Message} from './message.entity';
 import {Bot} from './bot.entity';
 import {OpenaiService, OpenAIChatMessage} from './openai.service';
 import {ChatSession} from "@/chat/chat-session.entity";
+import {Statistics} from "@/statistics/statistics.entity";
 
 @Injectable()
 export class ChatService {
@@ -12,6 +13,7 @@ export class ChatService {
         @InjectModel(Message.name) private messageModel: Model<Message>,
         @InjectModel(Bot.name) private botModel: Model<Bot>,
         @InjectModel(ChatSession.name) private sessionModel: Model<ChatSession>,
+        @InjectModel(Statistics.name) private statisticsModel: Model<Statistics>,
         private openaiService: OpenaiService,
     ) {
     }
@@ -50,8 +52,22 @@ export class ChatService {
             .limit(5)
             .exec();
 
+        let prompt = bot.prompt;
+
+        if (botId === 'information') {
+            const stats: Statistics = await this.statisticsModel.findOne({userId});
+
+            prompt = `${prompt}\n\nUser statistics across all bots:\n${
+                Object.entries(stats.metrics).map(
+                    ([slug, item]) => {
+                        return `${slug} - ${item[1]?.understandingPercent}% - ${item[1]?.comment}`
+                    }
+                ).join('\n')}`;
+
+        }
+
         const messages: OpenAIChatMessage[] = [
-            {role: 'system', content: bot.prompt},
+            {role: 'system', content: prompt},
             ...history.reverse().map(msg => ({
                 role: msg.role as 'user' | 'assistant',
                 content: msg.content
@@ -60,7 +76,7 @@ export class ChatService {
 
         let response: string;
         try {
-            response = await this.openaiService.getBotResponse(botId, messages);
+            response = await this.openaiService.getBotResponse(messages);
         } catch (error) {
             response = 'Sorry, there was a mistake. Please try again later.';
             console.error('Error when generating the bot\'s response:', error);

@@ -1,6 +1,6 @@
 'use client'
-import { MainPage } from "@/fsd-pages/MainPage";
+import {Chat} from "@features/Chat";
 
 export default function Home() {
-    return <MainPage />;
+    return <Chat/>;
 }

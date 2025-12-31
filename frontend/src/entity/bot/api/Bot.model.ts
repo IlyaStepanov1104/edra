@@ -2,24 +2,7 @@ import {atom} from "@shared/lib";
 import {createEffect, createStore, sample} from "effector";
 import {IBot} from "../types";
 import {PageModel, PagesType} from "@shared/lib/pages";
-import {BackendBot, getBotList} from "@shared/lib/api";
-
-const informationPageBotList: BackendBot[] = [
-    {
-        _id: "information",
-        name: "Information",
-        description: "",
-        prompt: "",
-        module: "information",
-    },
-    {
-        _id: "dashboard",
-        name: "Dashboard",
-        description: "",
-        prompt: "",
-        module: "information",
-    },
-];
+import {getBotList} from "@shared/lib/api";
 
 export const BotModel = atom(() => {
     const $botList = createStore<IBot[]>([]);
@@ -27,10 +10,6 @@ export const BotModel = atom(() => {
 
     const loadBotListFx = createEffect(async (page: PagesType | null) => {
         if (!page) return;
-
-        if (page === 'information') {
-            return informationPageBotList;
-        }
 
         return await getBotList(page);
     });

@@ -21,15 +21,11 @@ export type OpenAIChatMessage = UserMessage | AssistantMessage | SystemMessage;
 interface BotConfig {
   model: string;
   temperature: number;
-  systemMessage: string;
 }
 
-export const BOTS_CONFIG: Record<string, BotConfig> = {
-  'information': {
-    model: 'gpt-4',
+export const BOTS_CONFIG: BotConfig = {
+    model: 'gpt-5.2',
     temperature: 0.7,
-    systemMessage: 'You are a helpful assistant that provides general information'
-  }
 };
 
 @Injectable()
@@ -44,8 +40,8 @@ export class OpenaiService {
     this.openai = new OpenAI({ apiKey });
   }
 
-  async getBotResponse(botId: string, messages: OpenAIChatMessage[]) {
-    const botConfig = BOTS_CONFIG[botId] || BOTS_CONFIG['information'];
+  async getBotResponse(messages: OpenAIChatMessage[]) {
+    const botConfig = BOTS_CONFIG;
     const response = await this.openai.chat.completions.create({
       model: botConfig.model,
       messages,

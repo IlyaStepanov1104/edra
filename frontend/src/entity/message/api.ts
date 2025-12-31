@@ -5,11 +5,7 @@ export const getBotChatHistory = async (botSlug: string | null): Promise<IChatHi
     if (!botSlug) return [];
 
     try {
-        const history = await getChatHistory(botSlug);
-        return history.map((message, index) => ({
-            _id: `${index + 1}`,
-            ...message
-        }));
+        return await getChatHistory(botSlug);
     } catch (error) {
         console.error('Failed to fetch chat history:', error);
         return [];

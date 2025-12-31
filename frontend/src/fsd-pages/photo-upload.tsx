@@ -17,9 +17,9 @@ type OnChangeArgs = { event?: DragEvent<HTMLDivElement> | ChangeEvent<HTMLInputE
 export const PhotoUploadPage = () => {
     const {hash} = useParams<{ hash: string }>();
 
-    const [latex, setLatex] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [success, setSuccess] = useState<boolean | null>(null);
 
     if (!hash) return;
 
@@ -29,7 +29,7 @@ export const PhotoUploadPage = () => {
 
         setLoading(true);
         setError(null);
-        setLatex(null);
+        setSuccess(null);
 
         const formData = new FormData();
         formData.append("image", file);
@@ -39,8 +39,7 @@ export const PhotoUploadPage = () => {
             const response = await postImage(formData);
 
             if (response.status !== 'done') throw new Error("Recognition error");
-
-            setLatex(response.result);
+            setSuccess(true);
         } catch (e) {
             console.error(e);
             setError("Error when sending a file or analyzing it");
@@ -56,7 +55,7 @@ export const PhotoUploadPage = () => {
                 <Logo className={styles.HeaderLogo}/>
                 <Text variant="body-1">Upload a photo of the solution</Text>
 
-                {!loading && !error && !latex && (<FileUpload
+                {!loading && !error && !success && (<FileUpload
                     onChange={handleFileChange}
                     inputAttributes={{accept: "image/*", disabled: loading}}
                     name="File"
@@ -77,13 +76,10 @@ export const PhotoUploadPage = () => {
                     </Text>
                 )}
 
-                {latex && (
-                    <View gap={4}>
-                        <Text variant="body-3">LaTeX result:</Text>
-                        <Card>
-                            <Text variant="caption-1" attributes={{style: {whiteSpace: 'pre-wrap'}}}>{latex}</Text>
-                        </Card>
-                    </View>
+                {success && (
+                    <Text variant="body-2" color="positive">
+                        Your solution has been successfully uploaded.
+                    </Text>
                 )}
             </View>
         </Card>

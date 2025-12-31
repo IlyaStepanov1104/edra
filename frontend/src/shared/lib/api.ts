@@ -11,10 +11,9 @@ api.interceptors.request.use((config) => {
 });
 
 interface ChatMessage {
-    userId: string;
-    botId: string;
     role: 'user' | 'assistant';
     content: string;
+    type: 'html' | 'katex';
     createdAt: string;
 }
 

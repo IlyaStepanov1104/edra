@@ -55,7 +55,6 @@ Rules:
 
         try {
             const response = await this.openaiService.getBotResponse(
-                'statistics',
                 messages,
             );
             parsed = JSON.parse(response);

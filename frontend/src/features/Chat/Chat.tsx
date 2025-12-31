@@ -19,22 +19,16 @@ import {QRCode} from "antd";
 
 const informationBotHistory: IChatHistory = [
     {
-        _id: '1',
         content: 'Edra is not affiliated with or endorsed by the College Board. However, our curriculum is 100% aligned with the official SAT structure and content as of 2025.\n' +
             '\n' +
             '👉 For official SAT information, policies, and registration, please visit the College Board official website. https://satsuite.collegeboard.org/sat',
-        userId: 'default',
-        botId: 'information',
-        role: 'assistant'
+        role: 'assistant',
     },
     {
-        _id: '2',
         content: '💬 Meet Your Coach\n' +
             'Here is your personal SAT coach bot.\n' +
             'Ask anything, practice questions, and track your progress — all in one place.',
-        userId: 'default',
-        botId: 'information',
-        role: 'assistant'
+        role: 'assistant',
     }
 ];
 
@@ -97,11 +91,36 @@ export const Chat: FC = ({}) => {
             if (result.status === 'done' || result.status === 'error') {
                 clearInterval(interval)
             }
+            if (result.status === 'done') {
+                try {
+                    setChatHistory((prev) => [...prev, {
+                        role: 'user',
+                        content: result.result || '',
+                    }]);
+                    setIsMessageLoading(true);
+
+                    setQrModalOpen(false);
+                    unsubscribeLatexResult(qrHash);
+                    setQrResult(null);
+                    setQrHash(null);
+
+                    const response = await sendBotMessage(botSlug ?? '', result.result ?? '');
+
+                    setChatHistory((prev) => [...prev, {
+                        role: 'assistant',
+                        content: response,
+                    }]);
+                } catch (error) {
+                    console.error(error);
+                } finally {
+                    setIsMessageLoading(false);
+                }
+            }
         }, 2000);
 
 
         return () => clearInterval(interval);
-    }, [qrHash, qrModalOpen, qrResult?.status]);
+    }, [botSlug, inputValue, qrHash, qrModalOpen, qrResult?.status]);
 
     useEffect(() => {
         setChatHistory([]);
@@ -136,11 +155,8 @@ export const Chat: FC = ({}) => {
 
         try {
             setChatHistory((prev) => [...prev, {
-                _id: '',
                 role: 'user',
                 content: inputValue,
-                "userId": '',
-                "botId": '',
             }]);
             setInputValue('');
             setIsMessageLoading(true);
@@ -148,11 +164,8 @@ export const Chat: FC = ({}) => {
             const response = await sendBotMessage(botSlug, inputValue);
 
             setChatHistory((prev) => [...prev, {
-                _id: '',
                 role: 'assistant',
                 content: response,
-                "userId": '',
-                "botId": '',
             }]);
         } catch (error) {
             console.error(error);
@@ -171,13 +184,6 @@ export const Chat: FC = ({}) => {
         )
         : undefined
 
-    const insertQrResultInChat = () => {
-        setInputValue((prev) => `${prev}\n${qrResult?.result ?? ''}`);
-        setQrModalOpen(false);
-        unsubscribeLatexResult(qrHash ?? '');
-        setQrResult(null);
-        setQrHash(null);
-    }
 
     return botSlug ? (
         <div className={cn(styles.ChatWrapper, isInformationBot && styles.ChatWrapperInformation)}>
@@ -195,7 +201,7 @@ export const Chat: FC = ({}) => {
                                 markerSlot={<Marker isMe={message.role === 'user'}/>}
                                 key={index}
                             >
-                                <MessageRender content={message.content}/>
+                                <MessageRender content={message.content} />
                             </Timeline.Item>
                         );
                     })}
@@ -263,7 +269,11 @@ export const Chat: FC = ({}) => {
                     </div>
                 )}
             </View>
-            <Modal active={qrModalOpen} onClose={() => setQrModalOpen(false)}>
+            <Modal active={qrModalOpen} onClose={() => {
+                setQrModalOpen(false);
+                setQrResult(null);
+                setQrHash(null);
+            }}>
                 {(!qrResult || qrResult.status === 'pending') && (
                     <View align="center" gap={4}>
                         <Text variant="featured-2">Scan to upload your math photo</Text>
@@ -275,27 +285,6 @@ export const Chat: FC = ({}) => {
                     <View align="center" gap={4}>
                         <Text variant="featured-2">Waiting</Text>
                         <Loader size="large"/>
-                    </View>
-                )}
-                {(qrResult?.status === 'done') && (
-                    <View align="center" gap={4}>
-                        <Text variant="featured-2">Result</Text>
-                        <TextArea
-                            value={qrResult.result}
-                            name="result"
-                            resize='none'
-                            size='large'
-                            onChange={({value}) => setQrResult((prev) => ({
-                                status: prev?.status || 'pending',
-                                result: value,
-                                error: prev?.error
-                            }))}
-                        />
-                        <Button
-                            onClick={insertQrResultInChat}
-                            color='primary'
-                            variant='solid'
-                            size='xlarge'>Insert in message</Button>
                     </View>
                 )}
                 {(qrResult?.status === 'error') && (

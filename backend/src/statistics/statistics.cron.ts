@@ -47,7 +47,6 @@ export class StatisticsCron {
             }
 
             const summary = await this.openaiService.getBotResponse(
-                session.botId,
                 [
                     {
                         role: 'system',

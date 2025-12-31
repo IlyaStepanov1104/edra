@@ -1,3 +1,8 @@
 .SideBar {
     overflow-y: auto;
 }
+
+.MathInfo {
+    border: 1px solid var(--rs-color-border-primary);
+    padding-left: 40px !important;
+}
