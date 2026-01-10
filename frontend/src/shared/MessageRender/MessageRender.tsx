@@ -12,12 +12,20 @@ interface IMessageProps {
     content: string;
 }
 
+function normalizeLatex(md: string) {
+    return md
+        .replace(/\\\[/g, '$$')
+        .replace(/\\\]/g, '$$')
+        .replace(/\\\(/g, '$')
+        .replace(/\\\)/g, '$');
+}
+
 export const MessageRender: FC<IMessageProps> = ({content, className}) => {
     return (
-        <span
+        <div
             className={cn(styles.message, className)}
         ><ReactMarkdown
-            remarkPlugins={[remarkGfm, remarkMath]}
+            remarkPlugins={[remarkMath, remarkGfm]}
             rehypePlugins={[rehypeKatex]}
-        >{content}</ReactMarkdown></span>);
+        >{normalizeLatex(content)}</ReactMarkdown></div>);
 }
