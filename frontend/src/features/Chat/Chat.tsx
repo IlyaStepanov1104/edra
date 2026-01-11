@@ -52,6 +52,7 @@ const getOrigin = () => {
 
     return 'https://edra-en.vercel.app';
 }
+type ScrollReason = 'history' | 'user-message' | 'bot-message';
 
 export const Chat: FC = ({}) => {
     const params = useUnit(PageModel.$pageParams);
@@ -67,6 +68,8 @@ export const Chat: FC = ({}) => {
     const [qrHash, setQrHash] = useState<string | null>(null);
     const QRLink = `${getOrigin()}/photo-upload/${qrHash}`;
     const [qrResult, setQrResult] = useState<LatexResult | null>(null);
+    const lastBotMessageRef = useRef<HTMLDivElement | null>(null);
+    const scrollReasonRef = useRef<ScrollReason | null>(null);
 
     useEffect(() => {
         if (params?.bot !== botSlug) setBotSlug(params?.bot ?? null);
@@ -125,20 +128,39 @@ export const Chat: FC = ({}) => {
     useEffect(() => {
         setChatHistory([]);
         getBotChatHistory(botSlug)
-            .then(
-                (history) => setChatHistory(() => {
-                    if (isInformationBot) return [...informationBotHistory, ...history]
-                    return [...history]
-                })
-            )
+            .then((history) => {
+                scrollReasonRef.current = 'history';
+
+                setChatHistory(() => {
+                    if (isInformationBot) {
+                        return [...informationBotHistory, ...history];
+                    }
+                    return [...history];
+                });
+            })
             .catch(console.error);
     }, [botSlug, isInformationBot]);
 
+
     useEffect(() => {
-        if (chatContainerRef.current) {
-            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+        const container = chatContainerRef.current;
+        if (!container) return;
+
+        const reason = scrollReasonRef.current;
+
+        if (reason === 'history' || reason === 'user-message') {
+            container.scrollTop = container.scrollHeight;
         }
-    }, [chatContainerRef, chatHistory]);
+
+        if (reason === 'bot-message' && lastBotMessageRef.current) {
+            lastBotMessageRef.current.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start',
+            });
+        }
+
+        scrollReasonRef.current = null;
+    }, [chatHistory]);
 
     useEffect(() => {
         if (isMessageLoading) {
@@ -153,22 +175,24 @@ export const Chat: FC = ({}) => {
     const getHandleSend = () => async () => {
         if (!inputValue || !botSlug) return;
 
-        try {
-            setChatHistory((prev) => [...prev, {
-                role: 'user',
-                content: inputValue,
-            }]);
-            setInputValue('');
-            setIsMessageLoading(true);
+        scrollReasonRef.current = 'user-message';
+        setChatHistory((prev) => [
+            ...prev,
+            { role: 'user', content: inputValue },
+        ]);
 
+        setInputValue('');
+        setIsMessageLoading(true);
+
+        try {
             const response = await sendBotMessage(botSlug, inputValue);
 
-            setChatHistory((prev) => [...prev, {
-                role: 'assistant',
-                content: response,
-            }]);
-        } catch (error) {
-            console.error(error);
+            scrollReasonRef.current = 'bot-message';
+
+            setChatHistory((prev) => [
+                ...prev,
+                { role: 'assistant', content: response },
+            ]);
         } finally {
             setIsMessageLoading(false);
         }
@@ -196,12 +220,17 @@ export const Chat: FC = ({}) => {
             <div className={cn(styles.Chat, styles.Card)} ref={chatContainerRef}>
                 <Timeline>
                     {chatHistory.map((message, index) => {
+                        const isLast = index === chatHistory.length - 1;
+                        const isBot = message.role === 'assistant';
+
                         return (
                             <Timeline.Item
-                                markerSlot={<Marker isMe={message.role === 'user'}/>}
                                 key={index}
+                                markerSlot={<Marker isMe={message.role === 'user'}/>}
                             >
-                                <MessageRender content={message.content} />
+                                <div ref={isLast && isBot ? lastBotMessageRef : null}>
+                                    <MessageRender content={message.content} />
+                                </div>
                             </Timeline.Item>
                         );
                     })}
